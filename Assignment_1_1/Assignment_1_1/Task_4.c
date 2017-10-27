@@ -179,7 +179,7 @@ int next_field(FILE *csv, char *buffer, int max_length){
 int  main ( int argc , char *argv[] )
 {
     FILE *csv_file;
-    csv_file = fopen("/Users/sophiehegarty/Documents/Trinity Engineering/TCD JS/Data Structures and Algorithms/Assignment_1_1/Assignment_1_1/names.csv", "r");  //read in csv file
+    csv_file = fopen("/Users/sophiehegarty/Documents/Trinity Engineering/TCD JS/Data Structures and Algorithms/Assignment_1_1/Assignment_1_1/people.csv", "r");  //read in csv file
     //char data[1024];     //array storing data
     char buffer[MAX_STRING_SIZE];
     int position;
@@ -202,6 +202,7 @@ int  main ( int argc , char *argv[] )
     fclose(csv_file);
     float load = ((float)terms/ ARRAY_SIZE)*100;
     printf("Load: %f\n", load);
+     printf("terms: %d\n", terms);
     printf("Number of Collisions: %i\n", collisions);
     printf("Type stop to exit program.\n");
     
