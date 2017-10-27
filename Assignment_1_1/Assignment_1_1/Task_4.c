@@ -15,6 +15,7 @@
 #define MAX_STRING_SIZE 50 //max length of a string
 #define ARRAY_SIZE 211  //best be prime
 
+
 typedef struct  Element Element;
 struct Element
 {
@@ -25,8 +26,25 @@ struct Element
     int age;
     char personType;
     int count;
-
+    Element *next;
+    
+    
 };
+
+void add_node(Element** list, char count){
+    
+    Element* new_node = malloc(sizeof(Element)); //create new node to add data
+    if (new_node == NULL) {
+        fputs("Error in malloc\n", stderr);
+        exit(1);
+    }
+    
+    new_node->count = count;
+    new_node->next = *list;
+    *list = new_node;
+    
+    
+}
 
 struct Element* hashTable[ARRAY_SIZE];
 
@@ -54,14 +72,14 @@ int double_hash(char *s, int hashNumber){
 
 void createElement( int position, Element element, char* buffer){
     struct Element *new = (Element*)malloc(sizeof(Element)); //allocate new memory for element
-    strcpy(new -> surname, element.surname); //copy name that is passed through to the 'new' name in the struct
-    strcpy(new -> PersonID, element.PersonID);
+    /*strcpy(new -> surname, element.surname); //copy name that is passed through to the 'new' name in the struct
+    strcpy(&new -> personID, element.personID);
     strcpy(new -> depositionID, element.depositionID);
     strcpy(new -> forename, element.forename);
-    strcpy(new -> age, element.age);
-    strcpy(new -> PersonType, element.personType);
+    strcpy(&new -> age, element.age);
+    strcpy(&new -> personType, &element.personType);
     new -> count = 1; //set count to 1 as name occurs once for now
-    //strcpy(new -> forename, )
+    //strcpy(new -> forename, )*/
     hashTable[position] = new;  //place the name into the postion on the hastable acccording to hashno
 }
 
@@ -71,6 +89,8 @@ void initialiseArray(){ // initialoze array
     
     for(i=0; i<ARRAY_SIZE; i++) //loop thorugh
     {
+        
+        
         createElement(dummy_name, i, i, dummy_name, i, dummy_name,i); //set all buckets to null, within the arraysize
         hashTable[i]->count = 0; //set
     }
@@ -89,6 +109,8 @@ int search(char* name, int *key){
         
         *key = hashNumber; //set key/index to hashNumber
         value = 1;
+        add_node(&hashTable[hashNumber], name);
+        
     }
     else if(strcmp(hashTable[hashNumber]->surname , "\0") == 0){ //if NULL in bucket return 0
         
@@ -161,7 +183,7 @@ int  main ( int argc , char *argv[] )
     
     while ( !feof(csv_file) ){
         next_field(csv_file, buffer, MAX_STRING_SIZE);
-
+        
         if(search(buffer, &position)){ //if search = 1, increase count but dont replicate data
             hashTable[position]->count = hashTable[position]->count + 1; //increase count by 1
         }
@@ -172,8 +194,8 @@ int  main ( int argc , char *argv[] )
         }
     }
     fclose(csv_file);
-    int load = (terms / ARRAY_SIZE) * 100 ;
-    printf("Load: %d\n", load);
+    float load = ((float)terms / ARRAY_SIZE)*100;
+    printf("Load: %f\n", load);
     printf("Number of Collisions: %i\n", collisions);
     printf("Type stop to exit program.\n");
     
