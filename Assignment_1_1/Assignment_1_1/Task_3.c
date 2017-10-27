@@ -1,5 +1,5 @@
 //
-//  Task_2.c
+//  Task_3.c
 //  Assignment_1_1
 //
 //  Created by Sophie Hegarty on 26/10/2017.
@@ -40,6 +40,10 @@ int hash(char* s){
     while(*s)
     {
         hash = ((hash + *s * 31)) % ARRAY_SIZE; //DECREASED COLLISIONS BY 2
+                //hash = ((hash + *s) *191) % ARRAY_SIZE;
+        /*if(strcmp(s, "A") == 0 || strcmp(s, "O") == 0 || strcmp(s, "M") ==0 || strcmp(s, "N") == 0)
+            hash = (hash + 1) % 11;
+         }*/
         s++;
         /*if((strcmp(s, "A") == 0) || (strcmp(s, "O") == 0) || (strcmp(s, "M") == 0)){
             hash = ((hash + 1 )* 7) % ARRAY_SIZE;
