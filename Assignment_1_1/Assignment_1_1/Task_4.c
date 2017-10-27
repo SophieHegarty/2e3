@@ -19,12 +19,12 @@ typedef struct  Element Element;
 struct Element
 {
     char surname[MAX_STRING_SIZE];
-    int count;
     int personID;
     int depositionID;
     char forename[MAX_STRING_SIZE];
     int age;
     char personType;
+    int count;
 
 };
 
@@ -52,9 +52,14 @@ int double_hash(char *s, int hashNumber){
 }
 
 
-void createElement(char* name, int position, Element* element){
+void createElement( int position, Element element, char* buffer){
     struct Element *new = (Element*)malloc(sizeof(Element)); //allocate new memory for element
-    strcpy(new -> surname, name); //copy name that is passed through to the 'new' name in the struct
+    strcpy(new -> surname, element.surname); //copy name that is passed through to the 'new' name in the struct
+    strcpy(new -> PersonID, element.PersonID);
+    strcpy(new -> depositionID, element.depositionID);
+    strcpy(new -> forename, element.forename);
+    strcpy(new -> age, element.age);
+    strcpy(new -> PersonType, element.personType);
     new -> count = 1; //set count to 1 as name occurs once for now
     //strcpy(new -> forename, )
     hashTable[position] = new;  //place the name into the postion on the hastable acccording to hashno
@@ -66,7 +71,7 @@ void initialiseArray(){ // initialoze array
     
     for(i=0; i<ARRAY_SIZE; i++) //loop thorugh
     {
-        createElement(dummy_name,i); //set all buckets to null, within the arraysize
+        createElement(dummy_name, i, i, dummy_name, i, dummy_name,i); //set all buckets to null, within the arraysize
         hashTable[i]->count = 0; //set
     }
 }
@@ -152,16 +157,17 @@ int  main ( int argc , char *argv[] )
     int position;
     initialiseArray(); //set all counts to 0 and names to NULL
     int terms = 0;
+    Element e;
     
     while ( !feof(csv_file) ){
         next_field(csv_file, buffer, MAX_STRING_SIZE);
-        
+
         if(search(buffer, &position)){ //if search = 1, increase count but dont replicate data
             hashTable[position]->count = hashTable[position]->count + 1; //increase count by 1
         }
         
         else{ //else, but name in new element
-            createElement(buffer, position);
+            createElement(position, e, buffer);
             terms++;
         }
     }
@@ -177,7 +183,7 @@ int  main ( int argc , char *argv[] )
         scanf("%s", buffer); //add name to buffer array
         
         if(search(buffer, &position)){ //if search = 1, print count
-            printf("Name: %s\nCount: %i\n", hashTable[position] -> name, hashTable[position]->count);
+            printf("Name: %s\nCount: %i\n", hashTable[position] -> surname, hashTable[position]->count);
             
         }
         else if(strcmp(buffer, "stop") != 0){
@@ -188,4 +194,3 @@ int  main ( int argc , char *argv[] )
     
     return  0;
 }
-
