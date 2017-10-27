@@ -144,12 +144,12 @@ int next_field(FILE *csv, char *buffer, int max_length){
 int  main ( int argc , char *argv[] )
 {
     FILE *csv_file;
-    csv_file = fopen("/Users/sophiehegarty/Documents/Trinity Engineering/TCD JS/Data Structures and Algorithms/Assignment_1_1/Assignment_1_1/names.csv", "r");  //read in csv file
-    
+    //csv_file = fopen("/Users/sophiehegarty/Documents/Trinity Engineering/TCD JS/Data Structures and Algorithms/Assignment_1_1/Assignment_1_1/names.csv", "r");  //read in csv file
+    csv_file = fopen("names.csv", "r");
     //char data[1024];     //array storing data
     char buffer[MAX_STRING_SIZE];
     int position;
-    
+    int term = 0;
     initialiseArray(); //set all counts to 0 and names to NULL
     
     while ( !feof(csv_file) ){
@@ -161,11 +161,14 @@ int  main ( int argc , char *argv[] )
         
         else{ //else, put name in new element
             createElement(buffer, position);
+            term++;
         }
     }
     fclose(csv_file);
+    float load = ((float)term / ARRAY_SIZE)*100
     
     printf("Number of Collisions: %i\n", collisions);
+    printf("Load: %f\n", load);
     printf("Type stop to exit program.\n");
     
     
