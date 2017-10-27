@@ -13,7 +13,7 @@
 #include <stdbool.h>
 
 #define MAX_STRING_SIZE 50 //max length of a string
-#define ARRAY_SIZE 99991  //best be prime
+#define ARRAY_SIZE 211  //best be prime
 
 typedef struct  Element Element;
 struct Element
@@ -128,26 +128,54 @@ int next_field(FILE *csv, char *buffer, int max_length){
 int  main ( int argc , char *argv[] )
 {
     FILE *csv_file;
-    csv_file = fopen("/Users/sophiehegarty/Documents/Trinity Engineering/TCD JS/Data Structures and Algorithms/Assignment_1_1/Assignment_1_1/people.csv", "r");  //read in csv file
+    csv_file = fopen("names.csv", "r");  //read in csv file
     //char data[1024];     //array storing data
     char buffer[MAX_STRING_SIZE];
     int position;
     initialiseArray(); //set all counts to 0 and names to NULL
+    int term = 0;
     
     while ( !feof(csv_file) ){
         next_field(csv_file, buffer, MAX_STRING_SIZE);
+        term++;
         
+       /* if(strcmp(hashTable[hashNumber]->name, name) == 0){ //if search name == name in bucket return 1
+        
+        *key = hashNumber; //set key/index to hashNumber
+        value = 1;
+    }
+    else if(strcmp(hashTable[hashNumber]->name , "\0") == 0){ //if NULL in bucket return 0
+        
+        *key = hashNumber; //set key/index to hashNumber
+        value = 0;
+    }
+    else{
+        i = hashNumber;
+        while(strcmp(hashTable[i]->name, "\0") != 0){ //while name isn't NULL value --- collisions -----
+            
+            i++; //increase hash by 1 and try again
+            collisions++; //increase collision number by 1
+            if(i == ARRAY_SIZE){ //if reached end of array, start at hashtable[0]
+                i = 0;
+            }
+        }
+        *key = i;
+        value = 0;
+    }*/
         if(search(buffer, &position)){ //if search = 1, increase count but dont replicate data
             hashTable[position]->count = hashTable[position]->count + 1; //increase count by 1
         }
         
         else{ //else, but name in new element
             createElement(buffer, position);
+            
         }
     }
-    fclose(csv_file);
+    fclose(csv_file); 
+    float load = ((float)term / ARRAY_SIZE)*100;
     
     printf("Number of Collisions: %i\n", collisions);
+    printf("Load in percent: %f\n", load);
     printf("Type stop to exit program.\n");
     
     
@@ -156,11 +184,11 @@ int  main ( int argc , char *argv[] )
         scanf("%s", buffer); //add name to buffer array
         
         if(search(buffer, &position)){ //if search = 1, print count
-            printf("Name: %s\nCount: %i\n", hashTable[position] -> name, hashTable[position]->count);
+            printf(">>>Name: %s\n>>>Count: %i\n", hashTable[position] -> name, hashTable[position]->count);
             
         }
         else if(strcmp(buffer, "stop") != 0){
-            printf("%s not found.\n", buffer); //else print not found
+            printf(">>>%s not found.\n", buffer); //else print not found
             
         }
     }
