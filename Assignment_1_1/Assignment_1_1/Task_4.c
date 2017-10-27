@@ -43,7 +43,6 @@ void add_node(Element** list, char count){
     new_node->next = *list;
     *list = new_node;
     
-    
 }
 
 struct Element* hashTable[ARRAY_SIZE];
@@ -85,14 +84,20 @@ void createElement( int position, Element element, char* buffer){
 
 void initialiseArray(){ // initialoze array
     int i;
-    char* dummy_name = "\0"; //dummy variable, set it to NULL
+    char dummy_name = "\0"; //dummy variable, set it to NULL
+    Element e;
     
     for(i=0; i<ARRAY_SIZE; i++) //loop thorugh
     {
-        
-        
-        createElement(dummy_name, i, i, dummy_name, i, dummy_name,i); //set all buckets to null, within the arraysize
+        createElement(i, e, &dummy_name); //set all buckets to null, within the arraysize
         hashTable[i]->count = 0; //set
+        hashTable[i]->personID = 0; //set
+        hashTable[i]->depositionID = 0; //set
+        hashTable[i]->forename[dummy_name] = "/0"; //set
+        hashTable[i]->age = 0; //set
+        hashTable[i]->personType = "/0"; //set
+
+        
     }
 }
 
@@ -109,7 +114,7 @@ int search(char* name, int *key){
         
         *key = hashNumber; //set key/index to hashNumber
         value = 1;
-        add_node(&hashTable[hashNumber], name);
+        add_node(&hashTable[hashNumber], *name);
         
     }
     else if(strcmp(hashTable[hashNumber]->surname , "\0") == 0){ //if NULL in bucket return 0
@@ -125,7 +130,8 @@ int search(char* name, int *key){
             collisions++; //increase collision number by 1
             if(i == ARRAY_SIZE){ //if reached end of array, start at hashtable[0]
                 i = 0;
-            }
+                
+             }
         }
         *key = i;
         value = 0;
@@ -194,7 +200,7 @@ int  main ( int argc , char *argv[] )
         }
     }
     fclose(csv_file);
-    float load = ((float)terms / ARRAY_SIZE)*100;
+    float load = ((float)terms/ ARRAY_SIZE)*100;
     printf("Load: %f\n", load);
     printf("Number of Collisions: %i\n", collisions);
     printf("Type stop to exit program.\n");
@@ -205,7 +211,7 @@ int  main ( int argc , char *argv[] )
         scanf("%s", buffer); //add name to buffer array
         
         if(search(buffer, &position)){ //if search = 1, print count
-            printf("Name: %s\nCount: %i\n", hashTable[position] -> surname, hashTable[position]->count);
+            printf(">>>Name: %s\n>>>Count: %i\n", hashTable[position] -> surname, hashTable[position]->count);
             
         }
         else if(strcmp(buffer, "stop") != 0){
