@@ -1,5 +1,5 @@
 //
-//  Task_3.c
+//  Task_2.c
 //  Assignment_1_1
 //
 //  Created by Sophie Hegarty on 26/10/2017.
@@ -20,17 +20,30 @@ struct Element
 {
     char name[MAX_STRING_SIZE];
     int count;
-    
 };
 
 struct Element* hashTable[ARRAY_SIZE];
 
+/*int stringLength(char* name){
+    if(name == NULL) { return 0; }
+    
+    int length = 0;
+    while(*name != '\0') {
+        length++;
+    }
+    return length;
+}*/
+
 int hash(char* s){
     int hash = 0;
+    
     while(*s)
     {
-        hash = (hash + *s) % ARRAY_SIZE;
+        hash = ((hash + *s * 31)) % ARRAY_SIZE; //DECREASED COLLISIONS BY 2
         s++;
+        /*if((strcmp(s, "A") == 0) || (strcmp(s, "O") == 0) || (strcmp(s, "M") == 0)){
+            hash = ((hash + 1 )* 7) % ARRAY_SIZE;
+        }*/ //THIS DIDNT CHANGE COLLISIONS
     }
     return hash;
 }
@@ -81,14 +94,14 @@ int search(char* name, int *key){
     }
     else if(strcmp(hashTable[hashNumber]->name , "\0") == 0){ //if NULL in bucket return 0
         
-        *key = hashNumber; //set key/index to hashNumber
+        *key = hashNumber; //set key/position to hashNumber
         value = 0;
     }
     else{
         i = hashNumber;
         while(strcmp(hashTable[i]->name, "\0") != 0){ //while name isn't NULL value --- collisions -----
             
-            i = double_hash(name, i); //increase hash by 1 and try again
+            i = double_hash(name, i); //double hash and try again
             collisions++; //increase collision number by 1
             if(i == ARRAY_SIZE){ //if reached end of array, start at hashtable[0]
                 i = 0;
@@ -137,15 +150,18 @@ int next_field(FILE *csv, char *buffer, int max_length){
 }
 
 
+
+
 int  main ( int argc , char *argv[] )
 {
     FILE *csv_file;
-    csv_file = fopen("/Users/sophiehegarty/Documents/Trinity Engineering/TCD JS/Data Structures and Algorithms/Assignment_1_1/Assignment_1_1/names.csv", "r");  //read in csv file
+    //csv_file = fopen("/Users/sophiehegarty/Documents/Trinity Engineering/TCD JS/Data Structures and Algorithms/Assignment_1_1/Assignment_1_1/names.csv", "r");  //read in csv file
+    csv_file = fopen("names.csv", "r");
     //char data[1024];     //array storing data
     char buffer[MAX_STRING_SIZE];
     int position;
+    int term = 0;
     initialiseArray(); //set all counts to 0 and names to NULL
-    int terms = 0;
     
     while ( !feof(csv_file) ){
         next_field(csv_file, buffer, MAX_STRING_SIZE);
@@ -154,15 +170,17 @@ int  main ( int argc , char *argv[] )
             hashTable[position]->count = hashTable[position]->count + 1; //increase count by 1
         }
         
-        else{ //else, but name in new element
+        else{ //else, put name in new element
             createElement(buffer, position);
-            terms++;
+            term++;
         }
     }
     fclose(csv_file);
-    int load = (terms / ARRAY_SIZE) * 100 ;
-    printf("Load: %d\n", load);
+    double load;
+    load = (term / ARRAY_SIZE)*1000;
+    
     printf("Number of Collisions: %i\n", collisions);
+    printf("Load: %f\n", load);
     printf("Type stop to exit program.\n");
     
     
@@ -171,7 +189,7 @@ int  main ( int argc , char *argv[] )
         scanf("%s", buffer); //add name to buffer array
         
         if(search(buffer, &position)){ //if search = 1, print count
-            printf("Name: %s\nCount: %i\n", hashTable[position] -> name, hashTable[position]->count);
+            printf(">>>Name: %s\n>>>Count: %i\n", hashTable[position] -> name, hashTable[position]->count);
             
         }
         else if(strcmp(buffer, "stop") != 0){
